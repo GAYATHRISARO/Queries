@@ -1,0 +1,70 @@
+SUBQUERIES
+-----------
+
+1)select * 
+  from orders 
+  where salesman_id=(select salesman_id from salesman where name='Paul Adam');
+2)select *
+  from orders
+  where salesman_id=(select city from salesman where city like 'London%');
+3)select *
+  from orders
+  where salesman_id =(select distinct salesman_id from orders where customer_id =3007);
+4)select *
+  from orders
+  where purch_amt>(select avg(purch_amt)from orders where ord_date ='10/10/2012');
+5)select *
+  from orders
+  where salesman_id=(select salesman_id from salesman where city ='New York');
+6)select commission
+  from salesman
+  where salesman_id=(select salesman_id from customer where city ='Paris');
+7)select *
+  from customer
+  where customer_id = (select salesman_id -2001 from salesman where name ='Mc Lyon');
+8)select grade,count(*)
+  from customer
+  group by grade
+  having grade > (select avg(grade) from customer where city ='New York');
+9)select ord_no,ord_date,purch_amt,salesman_id
+  from orders
+  where salesman_id=(select salesman_id from salesman
+  where commission=(select max(commission) from salesman));
+10)select o.*,c.cust_name
+   from orders o,customer c
+   where o.customer_id=c.customer_id
+   and o.ord_date='2012/08/17';
+11)select name,salesman_id 
+   from salesman s
+   where 1<(select count(*) from customer where salesman_id=s.salesman_id);
+12)select *
+   from orders o
+   where purch_amt>(select avg(purch_amt) from orders c where o.customer_id=c.customer_id);
+13)select * 
+   from orders o
+   where purch_amt >=(select avg(purch_amt) from orders c where o.customer_id=c.customer_id);
+14)select ord_date,sum(purch_amt)
+   from orders o
+   group by ord_date
+   having sum(purch_amt) > (select 1000.00+max(purch_amt) from orders b where o.ord_date=b.ord_date);
+15)select customer_id,cust_name,city
+   from customer
+   where exists(select * from customer where city='London');
+16)select salesman_id,name
+   from salesman s
+   where salesman_id in(select distinct salesman_id from customer cu 
+   where exists(select * from customer c where c.salesman_id=s.salesman_id and c.cust_name <> cu.cust_name));
+17)select *
+   from salesman s
+   where salesman_id in(select distinct salesman_id from customer cu 
+   where not exists(select * from customer c where c.salesman_id=s.salesman_id and c.cust_name <> cu.cust_name));
+18)select *
+   from salesman s
+   where exists(select * from customer c where s.salesman_id=c.salesman_id
+   and 1<(select count(*) from orders o where o.customer_id=c.customer_id));
+19)select *
+   from salesman 
+   where city =any(select city from customer);
+20)select *
+   from salesman 
+   where city in(select city from customer);
