@@ -1,5 +1,5 @@
-SUBQUERIES
------------
+ SUBQUERIES
+ -----------
 
 1)select * 
   from orders 
